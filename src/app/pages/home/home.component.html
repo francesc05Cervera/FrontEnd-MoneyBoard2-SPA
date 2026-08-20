@@ -1,1 +1,69 @@
-<div class="home-page"><header class="topbar"><div><h1>Le tue sezioni</h1><p class="subtitle">Ciao, {{ auth.utenteCorrente()?.username }} 👋</p></div><button type="button" class="btn btn-neutral" (click)="logout()">Esci</button></header>@if (errore()) { <div class="error-banner">{{ errore() }}</div> }@if (caricamento()) { <div class="stato-vuoto"><span class="spinner spinner-dark"></span> Caricamento sezioni...</div> } @else if (sezioni().length === 0) { <div class="stato-vuoto"><p>Non hai ancora nessuna sezione di risparmio.</p><button type="button" class="btn btn-primary" (click)="apriModaleNuovaSezione()">Crea la prima sezione</button></div> } @else { <div class="griglia-sezioni">@for (sezione of sezioni(); track sezione.id) { <button type="button" class="sezione-card" (click)="apriSezione(sezione)"><div class="sezione-nome">{{ sezione.nome }}</div><div class="sezione-saldo">{{ sezione.saldo | number:'1.2-2' }} €</div><div class="sezione-obiettivo">Obiettivo: {{ sezione.obiettivo | number:'1.2-2' }} €</div></button> } }</div><button type="button" class="btn btn-primary fab" (click)="apriModaleNuovaSezione()">+ Nuova sezione</button> }@if (mostraModaleNuovaSezione()) { <div class="overlay" (click)="chiudiModale()"><div class="card modale" (click)="$event.stopPropagation()"><h2>Nuova sezione</h2><div class="field"><label for="nome-sezione">Nome</label><input id="nome-sezione" type="text" [(ngModel)]="nomeNuovaSezione" placeholder="Es. Vacanze" /></div><div class="field"><label for="obiettivo-sezione">Obiettivo di risparmio (€)</label><input id="obiettivo-sezione" type="number" step="0.01" [(ngModel)]="obiettivoNuovaSezione" placeholder="Es. 1000" /></div><div class="azioni-modale"><button type="button" class="btn btn-neutral" (click)="chiudiModale()">Annulla</button><button type="button" class="btn btn-primary" (click)="creaSezione()" [disabled]="creazioneInCorso()">@if (creazioneInCorso()) { <span class="spinner"></span> } Crea</button></div></div></div> }</div>
+<div class="home-page">
+  <header class="topbar">
+    <div>
+      <h1>Le tue sezioni</h1>
+      <p class="subtitle">Ciao, {{ auth.utenteCorrente()?.username }} 👋</p>
+    </div>
+    <button type="button" class="btn btn-neutral" (click)="logout()">Esci</button>
+  </header>
+
+  @if (errore()) {
+    <div class="error-banner">{{ errore() }}</div>
+  }
+
+  @if (caricamento()) {
+    <div class="stato-vuoto">
+      <span class="spinner spinner-dark"></span>
+      Caricamento sezioni...
+    </div>
+  } @else if (sezioni().length === 0) {
+    <div class="stato-vuoto">
+      <p>Non hai ancora nessuna sezione di risparmio.</p>
+      <button type="button" class="btn btn-primary" (click)="apriModaleNuovaSezione()">
+        Crea la prima sezione
+      </button>
+    </div>
+  } @else {
+    <div class="griglia-sezioni">
+      @for (sezione of sezioni(); track sezione.id) {
+        <button type="button" class="sezione-card" (click)="apriSezione(sezione)">
+          <div class="sezione-nome">{{ sezione.nome }}</div>
+          <div class="sezione-saldo">{{ sezione.saldo | number:'1.2-2' }} €</div>
+          <div class="sezione-obiettivo">Obiettivo: {{ sezione.obiettivo | number:'1.2-2' }} €</div>
+        </button>
+      }
+    </div>
+
+    <button type="button" class="btn btn-primary fab" (click)="apriModaleNuovaSezione()">
+      + Nuova sezione
+    </button>
+  }
+</div>
+
+@if (mostraModaleNuovaSezione()) {
+  <div class="overlay" (click)="chiudiModale()">
+    <div class="card modale" (click)="$event.stopPropagation()">
+      <h2>Nuova sezione</h2>
+
+      <div class="field">
+        <label for="nome-sezione">Nome</label>
+        <input id="nome-sezione" type="text" [(ngModel)]="nomeNuovaSezione" placeholder="Es. Vacanze" />
+      </div>
+
+      <div class="field">
+        <label for="obiettivo-sezione">Obiettivo di risparmio (€)</label>
+        <input id="obiettivo-sezione" type="number" step="0.01" [(ngModel)]="obiettivoNuovaSezione" placeholder="Es. 1000" />
+      </div>
+
+      <div class="azioni-modale">
+        <button type="button" class="btn btn-neutral" (click)="chiudiModale()">Annulla</button>
+        <button type="button" class="btn btn-primary" (click)="creaSezione()" [disabled]="creazioneInCorso()">
+          @if (creazioneInCorso()) {
+            <span class="spinner"></span>
+          }
+          Crea
+        </button>
+      </div>
+    </div>
+  </div>
+}

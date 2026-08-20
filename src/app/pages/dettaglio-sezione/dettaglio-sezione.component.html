@@ -1,1 +1,75 @@
-<div class="dettaglio-page"><button type="button" class="btn-back" (click)="torna()">&larr; Sezioni</button><div class="saldo-card">@if (caricamentoSezione()) { <span class="spinner spinner-dark"></span> } @else if (sezione()) { <div class="saldo-nome">{{ sezione()!.nome }}</div><div class="saldo-valore">{{ sezione()!.saldo | number:'1.2-2' }} €</div><div class="saldo-obiettivo">Obiettivo: {{ sezione()!.obiettivo | number:'1.2-2' }} €</div> } @else { <p>Sezione non trovata.</p> }</div>@if (errore()) { <div class="error-banner">{{ errore() }}</div> }<div class="azioni-principali"><button type="button" class="btn btn-success" (click)="vaiANuovaTransazione()">+ Aggiungi transazione</button><button type="button" class="btn btn-primary" (click)="caricaTutto()">↻ Aggiorna lista</button><button type="button" class="btn btn-danger azione-larga" (click)="eliminaSezione()" [disabled]="eliminazioneSezioneInCorso()">@if (eliminazioneSezioneInCorso()) { <span class="spinner"></span> } 🗑 Elimina sezione</button></div><h2 class="titolo-lista">Transazioni</h2>@if (caricamentoTransazioni()) { <div class="stato-vuoto"><span class="spinner spinner-dark"></span> Caricamento transazioni...</div> } @else if (transazioni().length === 0) { <div class="stato-vuoto">Nessuna transazione registrata in questa sezione.</div> } @else { <div class="lista-transazioni">@for (t of transazioni(); track t.id) { <div class="transazione-item"><div class="transazione-info"><div class="transazione-titolo">{{ t.titolo }}<span class="badge" [class.badge-entrata]="t.entrata" [class.badge-uscita]="!t.entrata">{{ t.entrata ? 'Entrata' : 'Uscita' }}</span></div><div class="transazione-descrizione">{{ t.descrizione }}</div><div class="transazione-data">{{ t.data | date:'dd/MM/yyyy' }}</div></div><div class="transazione-destra"><div class="transazione-importo" [class.importo-entrata]="t.entrata" [class.importo-uscita]="!t.entrata">{{ t.entrata ? '+' : '-' }}{{ t.importo | number:'1.2-2' }} €</div><button type="button" class="btn btn-warning btn-elimina" (click)="eliminaTransazione(t)" [disabled]="idTransazioneInEliminazione() === t.id">@if (idTransazioneInEliminazione() === t.id) { <span class="spinner"></span> } @else { 🗑 }</button></div></div> } }</div> }</div>
+<div class="dettaglio-page">
+  <button type="button" class="btn-back" (click)="torna()">&larr; Sezioni</button>
+
+  <div class="saldo-card">
+    @if (caricamentoSezione()) {
+      <span class="spinner spinner-dark"></span>
+    } @else if (sezione()) {
+      <div class="saldo-nome">{{ sezione()!.nome }}</div>
+      <div class="saldo-valore">{{ sezione()!.saldo | number:'1.2-2' }} €</div>
+      <div class="saldo-obiettivo">Obiettivo: {{ sezione()!.obiettivo | number:'1.2-2' }} €</div>
+    } @else {
+      <p>Sezione non trovata.</p>
+    }
+  </div>
+
+  @if (errore()) {
+    <div class="error-banner">{{ errore() }}</div>
+  }
+
+  <div class="azioni-principali">
+    <button type="button" class="btn btn-success" (click)="vaiANuovaTransazione()">
+      + Aggiungi transazione
+    </button>
+    <button type="button" class="btn btn-primary" (click)="caricaTutto()">
+      ↻ Aggiorna lista
+    </button>
+    <button type="button" class="btn btn-danger azione-larga" (click)="eliminaSezione()" [disabled]="eliminazioneSezioneInCorso()">
+      @if (eliminazioneSezioneInCorso()) {
+        <span class="spinner"></span>
+      }
+      🗑 Elimina sezione
+    </button>
+  </div>
+
+  <h2 class="titolo-lista">Transazioni</h2>
+
+  @if (caricamentoTransazioni()) {
+    <div class="stato-vuoto">
+      <span class="spinner spinner-dark"></span>
+      Caricamento transazioni...
+    </div>
+  } @else if (transazioni().length === 0) {
+    <div class="stato-vuoto">Nessuna transazione registrata in questa sezione.</div>
+  } @else {
+    <div class="lista-transazioni">
+      @for (t of transazioni(); track t.id) {
+        <div class="transazione-item">
+          <div class="transazione-info">
+            <div class="transazione-titolo">
+              {{ t.titolo }}
+              <span class="badge" [class.badge-entrata]="t.entrata" [class.badge-uscita]="!t.entrata">
+                {{ t.entrata ? 'Entrata' : 'Uscita' }}
+              </span>
+            </div>
+            <div class="transazione-descrizione">{{ t.descrizione }}</div>
+            <div class="transazione-data">{{ t.data | date:'dd/MM/yyyy' }}</div>
+          </div>
+
+          <div class="transazione-destra">
+            <div class="transazione-importo" [class.importo-entrata]="t.entrata" [class.importo-uscita]="!t.entrata">
+              {{ t.entrata ? '+' : '-' }}{{ t.importo | number:'1.2-2' }} €
+            </div>
+            <button type="button" class="btn btn-warning btn-elimina" (click)="eliminaTransazione(t)" [disabled]="idTransazioneInEliminazione() === t.id">
+              @if (idTransazioneInEliminazione() === t.id) {
+                <span class="spinner"></span>
+              } @else {
+                🗑
+              }
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
