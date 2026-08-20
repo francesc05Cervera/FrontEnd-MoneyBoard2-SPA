@@ -19,7 +19,6 @@ export class CreaTransazioneComponent implements OnInit {
   sezioneId!: number;
   sezione = signal<SezioneRisparmio | null>(null);
   caricamentoSezione = signal(true);
-
   titolo = '';
   descrizione = '';
   importo: number | null = null;
@@ -90,7 +89,7 @@ export class CreaTransazioneComponent implements OnInit {
       entrata: this.entrata,
       data: this.dataOdierna,
       sezione: { nome: sezione.nome },
-      utente: { id: utente.id, email: utente.email }
+      utente: { email: utente.email }
     };
 
     this.transazioneService.crea(payload).subscribe({

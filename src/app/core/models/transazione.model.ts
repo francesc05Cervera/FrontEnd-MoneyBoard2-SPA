@@ -20,5 +20,5 @@ export interface CreateTransactionRequest {
   entrata: boolean;
   data: string;
   sezione: { nome: string };
-  utente: { id: number; email: string };
+  utente: { email: string };
 }
