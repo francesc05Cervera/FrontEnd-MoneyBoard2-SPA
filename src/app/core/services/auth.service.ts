@@ -10,11 +10,16 @@ const STORAGE_KEY = 'moneyboard2_utente';
 export class AuthService {
   private readonly baseUrl = `${environment.apiUrl}/utenti`;
   readonly utenteCorrente = signal<Utente | null>(this.leggiDaStorage());
+
   constructor(private http: HttpClient) {}
 
   login(payload: LoginRequest): Observable<Utente> {
     return this.http.post<Utente>(`${this.baseUrl}/login`, payload).pipe(
-      tap((utente) => this.salvaSessione(utente))
+      tap((utente) => this.salvaSessione({
+        id: utente.id,
+        username: utente.username ?? null,
+        email: utente.email ?? payload.email
+      }))
     );
   }
 
@@ -32,9 +37,8 @@ export class AuthService {
   }
 
   private salvaSessione(utente: Utente): void {
-    const daSalvare: Utente = { id: utente.id, username: utente.username, email: utente.email };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(daSalvare));
-    this.utenteCorrente.set(daSalvare);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(utente));
+    this.utenteCorrente.set(utente);
   }
 
   private leggiDaStorage(): Utente | null {

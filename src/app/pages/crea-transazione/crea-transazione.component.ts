@@ -71,7 +71,10 @@ export class CreaTransazioneComponent implements OnInit {
       this.errore.set('Sezione non disponibile. Aggiorna la pagina e riprova.');
       return;
     }
-
+    if (!utente.email) {
+      this.errore.set('Email utente non disponibile. Esci ed effettua nuovamente il login.');
+      return;
+    }
     if (!this.titolo.trim() || this.importo === null || this.importo <= 0) {
       this.errore.set('Compila titolo e importo (deve essere maggiore di zero).');
       return;
@@ -87,7 +90,7 @@ export class CreaTransazioneComponent implements OnInit {
       entrata: this.entrata,
       data: this.dataOdierna,
       sezione: { nome: sezione.nome },
-      utente: { id: utente.id }
+      utente: { id: utente.id, email: utente.email }
     };
 
     this.transazioneService.crea(payload).subscribe({

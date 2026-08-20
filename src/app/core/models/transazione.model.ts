@@ -7,6 +7,7 @@ export interface Transazione {
   descrizione: string;
   importo: number;
   entrata: boolean;
+  isEntrata?: boolean;
   data: string;
   sezione: SezioneRisparmio;
   utente: Utente;
@@ -19,5 +20,5 @@ export interface CreateTransactionRequest {
   entrata: boolean;
   data: string;
   sezione: { nome: string };
-  utente: { id: number };
+  utente: { id: number; email: string };
 }
