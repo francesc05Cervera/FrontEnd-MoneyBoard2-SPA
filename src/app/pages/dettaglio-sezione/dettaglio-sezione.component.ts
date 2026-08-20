@@ -7,6 +7,8 @@ import { TransazioneService } from '../../core/services/transazione.service';
 import { SezioneRisparmio } from '../../core/models/sezione.model';
 import { Transazione } from '../../core/models/transazione.model';
 
+type BackendTransazione = Transazione & { isEntrata?: boolean };
+
 @Component({
   selector: 'app-dettaglio-sezione',
   standalone: true,
@@ -44,7 +46,13 @@ export class DettaglioSezioneComponent implements OnInit {
     if (!utente) return;
     this.caricamentoTransazioni.set(true); this.errore.set(null);
     this.transazioneService.getPerUtenteESezione(utente.id, this.sezioneId).subscribe({
-      next: (transazioni) => { this.transazioni.set(transazioni); this.caricamentoTransazioni.set(false); },
+      next: (transazioni) => {
+        this.transazioni.set(transazioni.map((t) => {
+          const raw = t as BackendTransazione;
+          return { ...t, entrata: raw.isEntrata ?? t.entrata ?? false };
+        }));
+        this.caricamentoTransazioni.set(false);
+      },
       error: (err) => { this.errore.set(err.message ?? 'Impossibile caricare le transazioni.'); this.caricamentoTransazioni.set(false); }
     });
   }
