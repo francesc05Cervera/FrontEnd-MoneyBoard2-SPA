@@ -19,6 +19,6 @@ export interface CreateTransactionRequest {
   importo: number;
   entrata: boolean;
   data: string;
-  sezione: { nome: string };
+  sezione: SezioneRisparmio;
   utente: { email: string };
 }

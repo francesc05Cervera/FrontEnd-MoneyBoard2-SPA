@@ -88,7 +88,7 @@ export class CreaTransazioneComponent implements OnInit {
       importo: this.importo,
       entrata: this.entrata,
       data: this.dataOdierna,
-      sezione: { nome: sezione.nome },
+      sezione,
       utente: { email: utente.email }
     };
 
