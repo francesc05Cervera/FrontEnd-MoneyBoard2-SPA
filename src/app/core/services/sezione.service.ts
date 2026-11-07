@@ -6,18 +6,21 @@ import { DeleteSezioneRequest, SectionCreateRequest, SezioneRisparmio } from '..
 
 @Injectable({ providedIn: 'root' })
 export class SezioneService {
-  private readonly baseUrl = `${environment.apiUrl}/sezioni`;
+  private readonly baseUrl = `${environment.apiUrl}/sezione`;
   constructor(private http: HttpClient) {}
 
-  getPerUtente(utenteId: number): Observable<SezioneRisparmio[]> {
-    return this.http.get<SezioneRisparmio[]>(`${this.baseUrl}/utente/${utenteId}`);
+  /** GET /api2/sezione → sezioni dell'utente autenticato (id ricavato dal token). */
+  getSezioni(): Observable<SezioneRisparmio[]> {
+    return this.http.get<SezioneRisparmio[]>(this.baseUrl);
   }
 
-  crea(payload: SectionCreateRequest): Observable<SezioneRisparmio> {
-    return this.http.post<SezioneRisparmio>(this.baseUrl, payload);
+  /** POST /api2/sezione/create → il backend risponde con testo semplice. */
+  crea(payload: SectionCreateRequest): Observable<string> {
+    return this.http.post(`${this.baseUrl}/create`, payload, { responseType: 'text' });
   }
 
-  elimina(payload: DeleteSezioneRequest): Observable<void> {
-    return this.http.delete<void>(this.baseUrl, { body: payload });
+  /** DELETE /api2/sezione con body { nome } → risposta in testo semplice. */
+  elimina(payload: DeleteSezioneRequest): Observable<string> {
+    return this.http.delete(this.baseUrl, { body: payload, responseType: 'text' });
   }
 }

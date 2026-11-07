@@ -2,7 +2,7 @@
   <header class="topbar">
     <div>
       <h1>Le tue sezioni</h1>
-      <p class="subtitle">Ciao, {{ auth.utenteCorrente()?.username }} 👋</p>
+      <p class="subtitle">Ciao, {{ auth.utenteCorrente()?.email }} 👋</p>
     </div>
     <button type="button" class="btn btn-neutral" (click)="logout()">Esci</button>
   </header>

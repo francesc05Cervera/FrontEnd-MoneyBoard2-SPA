@@ -2,7 +2,6 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
 import { SezioneService } from '../../core/services/sezione.service';
 import { TransazioneService } from '../../core/services/transazione.service';
 import { SezioneRisparmio } from '../../core/models/sezione.model';
@@ -30,7 +29,6 @@ export class CreaTransazioneComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private auth: AuthService,
     private sezioneService: SezioneService,
     private transazioneService: TransazioneService
   ) {}
@@ -41,14 +39,8 @@ export class CreaTransazioneComponent implements OnInit {
   }
 
   private caricaSezione(): void {
-    const utente = this.auth.utenteCorrente();
-    if (!utente) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
     this.caricamentoSezione.set(true);
-    this.sezioneService.getPerUtente(utente.id).subscribe({
+    this.sezioneService.getSezioni().subscribe({
       next: (sezioni) => {
         const sezione = sezioni.find((item) => item.id === this.sezioneId) ?? null;
         this.sezione.set(sezione);
@@ -63,15 +55,10 @@ export class CreaTransazioneComponent implements OnInit {
   }
 
   creaTransazione(): void {
-    const utente = this.auth.utenteCorrente();
     const sezione = this.sezione();
 
-    if (!utente || !sezione) {
+    if (!sezione) {
       this.errore.set('Sezione non disponibile. Aggiorna la pagina e riprova.');
-      return;
-    }
-    if (!utente.email) {
-      this.errore.set('Email utente non disponibile. Esci ed effettua nuovamente il login.');
       return;
     }
     if (!this.titolo.trim() || this.importo === null || this.importo <= 0) {
@@ -88,8 +75,7 @@ export class CreaTransazioneComponent implements OnInit {
       importo: this.importo,
       entrata: this.entrata,
       data: this.dataOdierna,
-      sezione,
-      utente: { email: utente.email }
+      sezione: { nome: sezione.nome }
     };
 
     this.transazioneService.crea(payload).subscribe({

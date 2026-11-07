@@ -48,8 +48,8 @@
           <div class="transazione-info">
             <div class="transazione-titolo">
               {{ t.titolo }}
-              <span class="badge" [class.badge-entrata]="t.entrata" [class.badge-uscita]="!t.entrata">
-                {{ t.entrata ? 'Entrata' : 'Uscita' }}
+              <span class="badge" [class.badge-entrata]="t.isEntrata" [class.badge-uscita]="!t.isEntrata">
+                {{ t.isEntrata ? 'Entrata' : 'Uscita' }}
               </span>
             </div>
             <div class="transazione-descrizione">{{ t.descrizione }}</div>
@@ -57,8 +57,8 @@
           </div>
 
           <div class="transazione-destra">
-            <div class="transazione-importo" [class.importo-entrata]="t.entrata" [class.importo-uscita]="!t.entrata">
-              {{ t.entrata ? '+' : '-' }}{{ t.importo | number:'1.2-2' }} €
+            <div class="transazione-importo" [class.importo-entrata]="t.isEntrata" [class.importo-uscita]="!t.isEntrata">
+              {{ t.isEntrata ? '+' : '-' }}{{ t.importo | number:'1.2-2' }} €
             </div>
             <button type="button" class="btn btn-warning btn-elimina" (click)="eliminaTransazione(t)" [disabled]="idTransazioneInEliminazione() === t.id">
               @if (idTransazioneInEliminazione() === t.id) {

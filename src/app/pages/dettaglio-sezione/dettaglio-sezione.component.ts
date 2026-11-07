@@ -1,13 +1,10 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
 import { SezioneService } from '../../core/services/sezione.service';
 import { TransazioneService } from '../../core/services/transazione.service';
 import { SezioneRisparmio } from '../../core/models/sezione.model';
 import { Transazione } from '../../core/models/transazione.model';
-
-type BackendTransazione = Transazione & { isEntrata?: boolean };
 
 @Component({
   selector: 'app-dettaglio-sezione',
@@ -26,31 +23,24 @@ export class DettaglioSezioneComponent implements OnInit {
   idTransazioneInEliminazione = signal<number | null>(null);
   errore = signal<string | null>(null);
 
-  constructor(private route: ActivatedRoute, private router: Router, private auth: AuthService, private sezioneService: SezioneService, private transazioneService: TransazioneService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private sezioneService: SezioneService, private transazioneService: TransazioneService) {}
 
   ngOnInit(): void { this.sezioneId = Number(this.route.snapshot.paramMap.get('id')); this.caricaTutto(); }
   caricaTutto(): void { this.caricaSezione(); this.aggiornaListaTransazioni(); }
 
   private caricaSezione(): void {
-    const utente = this.auth.utenteCorrente();
-    if (!utente) return;
     this.caricamentoSezione.set(true);
-    this.sezioneService.getPerUtente(utente.id).subscribe({
+    this.sezioneService.getSezioni().subscribe({
       next: (sezioni) => { const trovata = sezioni.find((s) => s.id === this.sezioneId) ?? null; this.sezione.set(trovata); this.caricamentoSezione.set(false); },
       error: (err) => { this.errore.set(err.message ?? 'Impossibile caricare la sezione.'); this.caricamentoSezione.set(false); }
     });
   }
 
   aggiornaListaTransazioni(): void {
-    const utente = this.auth.utenteCorrente();
-    if (!utente) return;
     this.caricamentoTransazioni.set(true); this.errore.set(null);
-    this.transazioneService.getPerUtenteESezione(utente.id, this.sezioneId).subscribe({
+    this.transazioneService.getTransazioniSezione(this.sezioneId).subscribe({
       next: (transazioni) => {
-        this.transazioni.set(transazioni.map((t) => {
-          const raw = t as BackendTransazione;
-          return { ...t, entrata: raw.isEntrata ?? t.entrata ?? false };
-        }));
+        this.transazioni.set(transazioni);
         this.caricamentoTransazioni.set(false);
       },
       error: (err) => { this.errore.set(err.message ?? 'Impossibile caricare le transazioni.'); this.caricamentoTransazioni.set(false); }

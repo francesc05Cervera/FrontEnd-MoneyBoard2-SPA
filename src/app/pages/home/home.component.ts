@@ -27,10 +27,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void { this.caricaSezioni(); }
 
   caricaSezioni(): void {
-    const utente = this.auth.utenteCorrente();
-    if (!utente) return;
     this.caricamento.set(true); this.errore.set(null);
-    this.sezioneService.getPerUtente(utente.id).subscribe({
+    this.sezioneService.getSezioni().subscribe({
       next: (sezioni) => { this.sezioni.set(sezioni); this.caricamento.set(false); },
       error: (err) => { this.errore.set(err.message ?? 'Impossibile caricare le sezioni.'); this.caricamento.set(false); }
     });
@@ -41,10 +39,9 @@ export class HomeComponent implements OnInit {
   chiudiModale(): void { this.mostraModaleNuovaSezione.set(false); }
 
   creaSezione(): void {
-    const utente = this.auth.utenteCorrente();
-    if (!utente || !this.nomeNuovaSezione.trim() || this.obiettivoNuovaSezione === null) return;
+    if (!this.nomeNuovaSezione.trim() || this.obiettivoNuovaSezione === null) return;
     this.creazioneInCorso.set(true);
-    this.sezioneService.crea({ nome: this.nomeNuovaSezione.trim(), obbiettivo: this.obiettivoNuovaSezione, utente: { id: utente.id } }).subscribe({
+    this.sezioneService.crea({ nome: this.nomeNuovaSezione.trim(), obbiettivo: this.obiettivoNuovaSezione }).subscribe({
       next: () => { this.creazioneInCorso.set(false); this.mostraModaleNuovaSezione.set(false); this.caricaSezioni(); },
       error: (err) => { this.creazioneInCorso.set(false); this.errore.set(err.message ?? 'Creazione sezione non riuscita.'); }
     });
